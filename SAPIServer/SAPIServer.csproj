@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ExampleController.cs" />
+    <Compile Include="Controllers\WeChatController.cs" />
     <Compile Include="SAPIServer.cs">
       <SubType>Form</SubType>
     </Compile>

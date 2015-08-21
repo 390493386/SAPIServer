@@ -120,11 +120,16 @@ namespace SiweiSoft.SAPIService.Core
             {
                 string postData = null;
 
-                using (Stream inputStream = HttpContext.Current.Request.InputStream)
+                using (Stream inputStream = context.Request.InputStream)
                 {
-                    Byte[] buffer = new Byte[inputStream.Length];
-                    inputStream.Read(buffer, 0, (Int32)inputStream.Length);
-                    postData = Encoding.UTF8.GetString(buffer);
+                    byte[] buffer = new byte[8192];
+                    int length = 0;
+                    do
+                    {
+                        length = inputStream.Read(buffer, 0, buffer.Length);
+                        postData += Encoding.UTF8.GetString(buffer, 0, length);
+                    }
+                    while (length > 0);
                 }
 
                 if (postData.StartsWith("{"))
