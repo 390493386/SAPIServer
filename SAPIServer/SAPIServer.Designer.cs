@@ -33,7 +33,6 @@
             this.ClearLog = new System.Windows.Forms.Button();
             this.AutoTask = new System.Windows.Forms.Button();
             this.SvcStartStop = new System.Windows.Forms.Button();
-            this.logsBox = new SiweiSoft.SAPIServer.SListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.t_cookieExpires = new System.Windows.Forms.TextBox();
@@ -60,6 +59,7 @@
             this.c_selfStartService = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.c_selfStartServer = new System.Windows.Forms.CheckBox();
+            this.logsBox = new SiweiSoft.SAPIServer.SListBox();
             this.tab1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -120,16 +120,6 @@
             this.SvcStartStop.Text = "SAPI服务：开始/停止";
             this.SvcStartStop.UseVisualStyleBackColor = true;
             this.SvcStartStop.Click += new System.EventHandler(this.SvcStartStop_Click);
-            // 
-            // logsBox
-            // 
-            this.logsBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.logsBox.FormattingEnabled = true;
-            this.logsBox.ItemHeight = 12;
-            this.logsBox.Location = new System.Drawing.Point(6, 7);
-            this.logsBox.Name = "logsBox";
-            this.logsBox.Size = new System.Drawing.Size(621, 376);
-            this.logsBox.TabIndex = 0;
             // 
             // tabPage2
             // 
@@ -373,6 +363,16 @@
             this.c_selfStartServer.Text = "开机运行";
             this.c_selfStartServer.UseVisualStyleBackColor = true;
             // 
+            // logsBox
+            // 
+            this.logsBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.logsBox.FormattingEnabled = true;
+            this.logsBox.ItemHeight = 12;
+            this.logsBox.Location = new System.Drawing.Point(6, 7);
+            this.logsBox.Name = "logsBox";
+            this.logsBox.Size = new System.Drawing.Size(621, 376);
+            this.logsBox.TabIndex = 0;
+            // 
             // SAPIServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -380,7 +380,10 @@
             this.ClientSize = new System.Drawing.Size(665, 470);
             this.Controls.Add(this.tab1);
             this.Name = "SAPIServer";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SAPIServer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SAPIServer_FormClosing);
+            this.Load += new System.EventHandler(this.SAPIServer_Load);
             this.tab1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);

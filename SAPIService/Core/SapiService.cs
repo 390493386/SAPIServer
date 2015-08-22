@@ -236,6 +236,7 @@ namespace SiweiSoft.SAPIService.Core
                     }
                     catch (HttpListenerException)
                     {
+                        Status = Status.Stopped;
                         Log.Comment(CommentType.Warn, "服务线程已终止。");
                     }
                 }
@@ -254,51 +255,63 @@ namespace SiweiSoft.SAPIService.Core
         {
             HttpListenerContext requestContext = (HttpListenerContext)context;
 
-            if (requestContext.Request.RawUrl == "/favicon.ico")//Request for the icon
+            //if (requestContext.Request.RawUrl == "/favicon.ico")//Request for the icon
+            //{
+            //    //TODO: handle the request for the icon
+            //    requestContext.Response.OutputStream.Close();
+            //}
+            //else
+            //{
+            TSession session = null;
+            if (_withCookie)
             {
-                //TODO: handle the request for the icon
-                requestContext.Response.OutputStream.Close();
-            }
-            else
-            {
-                TSession session = null;
-                if (_withCookie)
-                {
-                    //Set cros options
-                    if (_withCrossOrigin)
-                        requestContext.Response.Headers.Add("Access-Control-Allow-Credentials: true");
-
-                    //Get the cookie from the request
-                    Cookie cookie = requestContext.Request.Cookies[_cookieName];
-                    if (cookie == null)
-                    {
-                        session = GenerateNewSession<TSession>(requestContext);
-                    }
-                    else
-                    {
-                        string cookieString = cookie.Value;
-                        if (SessionsDictionary.ContainsKey(cookieString))
-                            session = (TSession)SessionsDictionary[cookieString];
-                        else
-                            session = this.GenerateNewSession<TSession>(requestContext, expires: cookie.Expires);
-                    }
-                }
+                //Set cros options
                 if (_withCrossOrigin)
-                    requestContext.Response.Headers.Add("Access-Control-Allow-Origin: " + _originHost);
+                    requestContext.Response.Headers.Add("Access-Control-Allow-Credentials: true");
 
-                SapiRequest request = new SapiRequest(requestContext, session);
-                request.Response();
+                //Get the cookie from the request
+                Cookie cookie = requestContext.Request.Cookies[_cookieName];
+                if (cookie == null)
+                {
+                    session = GenerateNewSession<TSession>(requestContext);
+                }
+                else
+                {
+                    string cookieString = cookie.Value;
+                    if (SessionsDictionary.ContainsKey(cookieString))
+                        session = (TSession)SessionsDictionary[cookieString];
+                    else
+                        session = this.GenerateNewSession<TSession>(requestContext, expires: cookie.Expires);
+                }
             }
+            if (_withCrossOrigin)
+                requestContext.Response.Headers.Add("Access-Control-Allow-Origin: " + _originHost);
+
+            SapiRequest request = new SapiRequest(requestContext, session);
+            request.Response();
+            //}
         }
 
         /// <summary>
         /// 停止服务
         /// </summary>
-        public void Stop()
+        /// <returns></returns>
+        public bool Stop()
         {
-            Status = Status.Stopped;
             listener.Stop();
-            Log.Comment(CommentType.Warn, "Service stoped.");
+
+            Log.Comment(CommentType.Warn, "等待服务线程终止。。。");
+            for (int i = 0; i < 3; ++i)
+            {
+                Thread.Sleep((i + 1) * 100);
+                if (Status == Status.Stopped)
+                {
+                    Log.Comment(CommentType.Warn, "服务已经停止。");
+                    return true;
+                }
+            }
+            Log.Comment(CommentType.Warn, "等待服务线程终止超时。");
+            return false;
         }
 
         //生成新的session

@@ -150,5 +150,22 @@ namespace SiweiSoft.SAPIServer
         {
             logsBox.Items.Clear();
         }
+
+        //窗体加载时响应事件
+        private void SAPIServer_Load(object sender, EventArgs e)
+        {
+            if (configuration.ContainsKey("SvcSelfStart") && configuration["SvcSelfStart"] == "1")
+                SvcStartStop.PerformClick();
+        }
+
+        private void SAPIServer_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (serviceInstance != null && serviceInstance.Status == Status.Running)
+            {
+                if (MessageBox.Show("关闭窗口前将会停止服务，确定关闭窗口？", "确定", MessageBoxButtons.YesNo) == DialogResult.No ||
+                    !serviceInstance.Stop())
+                    e.Cancel = true;
+            }
+        }
     }
 }
