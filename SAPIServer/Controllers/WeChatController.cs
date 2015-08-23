@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace SiweiSoft.SAPIServer.Controllers
 {
@@ -28,10 +29,24 @@ namespace SiweiSoft.SAPIServer.Controllers
             }
             else
             {
-                foreach (var item in Parameters)
-                {
-                    Log.Comment(CommentType.Info, item.Key + "," + item.Value.ToString());
-                }
+                string text = @"<xml>
+                                <ToUserName><![CDATA[{0}]]></ToUserName>
+                                <FromUserName><![CDATA[{1}]]></FromUserName>
+                                <CreateTime>{2}</CreateTime>
+                                <MsgType><![CDATA[text]]></MsgType>
+                                <Content><![CDATA[{3}]]></Content>
+                                </xml>";
+                string content = Parameters.ContainsKey("Content") ? Parameters["Content"].ToString() : null;
+                string resp = HttpHelper.HttpGet("http://rmbz.net/Api/AiTalk.aspx", "key=rmbznet&word=" + content);
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                Dictionary<string, string> result = serializer.Deserialize<Dictionary<string, string>>(resp);
+
+                string responseUser = "空";
+                if (result.ContainsKey("content"))
+                    responseUser = result["content"];
+
+                ar.Result.Add("single", String.Format(text, Parameters["FromUserName"].ToString(), 
+                    Parameters["ToUserName"].ToString(),DateTime.Now.Ticks, responseUser));
             }
 
             return ar;
