@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SiweiSoft.SAPIService.Helper
 {
-    public class HttpHelper
+    public class HttpUtilities
     {
         public static string HttpGet(string url, string postDataStr)
         {

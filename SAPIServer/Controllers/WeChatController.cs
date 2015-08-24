@@ -37,7 +37,7 @@ namespace SiweiSoft.SAPIServer.Controllers
                                 <Content><![CDATA[{3}]]></Content>
                                 </xml>";
                 string content = Parameters.ContainsKey("Content") ? Parameters["Content"].ToString() : null;
-                string resp = HttpHelper.HttpGet("http://rmbz.net/Api/AiTalk.aspx", "key=rmbznet&word=" + content);
+                string resp = HttpUtilities.HttpGet("http://rmbz.net/Api/AiTalk.aspx", "key=rmbznet&word=" + content);
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 Dictionary<string, string> result = serializer.Deserialize<Dictionary<string, string>>(resp);
 
