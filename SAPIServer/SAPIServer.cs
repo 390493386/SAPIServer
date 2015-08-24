@@ -167,5 +167,16 @@ namespace SiweiSoft.SAPIServer
                     e.Cancel = true;
             }
         }
+
+        private void logsBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int selectedIndex = logsBox.IndexFromPoint(e.Location);
+            if (selectedIndex != ListBox.NoMatches)
+            {
+                LBItemDetail logDetais = new LBItemDetail(((SListBoxItem)logsBox.Items[selectedIndex]).Text);
+                //logDetais.ldRichTextBox
+                logDetais.ShowDialog();
+            }
+        }
     }
 }
