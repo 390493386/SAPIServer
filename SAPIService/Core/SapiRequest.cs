@@ -118,41 +118,58 @@ namespace SiweiSoft.SAPIService.Core
 
             if (requestMethod == "POST" && context.Request.InputStream.CanRead)
             {
-                string postData = null;
+                //TODO: 上传文件请求处理
+                string contentType = context.Request.Headers["Content-Type"];
+                if (contentType != null && contentType.Contains("multipart/form-data"))
+                {
+                    //context.Request.
+                    //if(Filepath ！= null&& exist)
+                    //{
 
-                using (Stream inputStream = context.Request.InputStream)
-                {
-                    byte[] buffer = new byte[8192];
-                    int length = 0;
-                    do
-                    {
-                        length = inputStream.Read(buffer, 0, buffer.Length);
-                        postData += Encoding.UTF8.GetString(buffer, 0, length);
-                    }
-                    while (length > 0);
-                }
-
-                if (postData.StartsWith("{"))
-                {
-                    Dictionary<string, object> param = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(postData);
-                    foreach (var p in param)
-                    {
-                        parameters.Add(p.Key, p.Value);
-                    }
-                }
-                else if (postData.StartsWith("<xml>"))
-                {
-                    XmlDocument doc = new XmlDocument();
-                    doc.LoadXml(postData);
-                    XmlNode ToUserName = doc.SelectSingleNode("/xml/ToUserName");
-                    XmlNode FromUserName = doc.SelectSingleNode("/xml/FromUserName");
-                    XmlNode Content = doc.SelectSingleNode("/xml/Content");
-                    parameters.Add("ToUserName", ToUserName.InnerText);
-                    parameters.Add("FromUserName", FromUserName.InnerText);
-                    parameters.Add("Content", Content.InnerText);
+                    //}
+                    //else
+                    //print log file path not exist
                 }
                 else
-                    GetURLParameters(ref parameters, postData);
+                {
+                    string postData = null;
+
+                    using (Stream inputStream = context.Request.InputStream)
+                    {
+                        byte[] buffer = new byte[8192];
+                        int length = 0;
+                        do
+                        {
+                            length = inputStream.Read(buffer, 0, buffer.Length);
+                            postData += Encoding.UTF8.GetString(buffer, 0, length);
+                        }
+                        while (length > 0);
+                    }
+
+                    if (postData.StartsWith("{"))
+                    {
+                        Dictionary<string, object> param = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(postData);
+                        foreach (var p in param)
+                        {
+                            parameters.Add(p.Key, p.Value);
+                        }
+                    }
+                    else if (postData.StartsWith("<xml>"))
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(postData);
+                        XmlNode ToUserName = doc.SelectSingleNode("/xml/ToUserName");
+                        XmlNode FromUserName = doc.SelectSingleNode("/xml/FromUserName");
+                        XmlNode Content = doc.SelectSingleNode("/xml/Content");
+                        XmlNode MsgType = doc.SelectSingleNode("/xml/MsgType");
+                        parameters.Add("ToUserName", ToUserName.InnerText);
+                        parameters.Add("FromUserName", FromUserName.InnerText);
+                        parameters.Add("Content", Content.InnerText);
+                        parameters.Add("MsgType", MsgType.InnerText); //当前只支持文本信息类型
+                    }
+                    else
+                        GetURLParameters(ref parameters, postData);
+                }
             }
             return parameters;
         }
