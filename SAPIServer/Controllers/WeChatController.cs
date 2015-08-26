@@ -21,11 +21,11 @@ namespace SiweiSoft.SAPIServer.Controllers
             string msgFrom = Parameters["FromUserName"].ToString();
             string msgTo = Parameters["ToUserName"].ToString();
             string msgType = Parameters["MsgType"].ToString();
-            string content = Parameters["Content"].ToString();
 
             WXActionResult ar = new WXActionResult();
             if (msgType == "text")
             {
+                string content = Parameters["Content"].ToString();
                 string[] userConfig = GetUserConfig(msgFrom);
                 if (Parameters.ContainsKey("echostr") && ValidateSignature(userConfig[0]))
                 {
@@ -39,6 +39,17 @@ namespace SiweiSoft.SAPIServer.Controllers
 
                     ar.Result.Add("single", String.Format(text, Parameters["FromUserName"].ToString(),
                         Parameters["ToUserName"].ToString()));
+                }
+            }
+            else if (msgType == "event")
+            {
+                string _event = Parameters["Event"].ToString();
+                if (_event == "subscribe")
+                {
+                    string subscribeMsgModel = "<xml><ToUserName><![CDATA[{0}]]></ToUserName><FromUserName><![CDATA[{1}]]></FromUserName><CreateTime>{2}</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[{3}]]></Content></xml>";
+                    string subscribeMsg = "欢迎关注“微平台开发”/:rose：\n无论您是想了解微信公众平台开发还是有开发公众平台的需求都可以关注我们，我们定期更新最新的IT动向，发布最新的移动互联网信息，让您在移动互联网时代快人一步，我们专业承接微信公众平台开发，欢迎前来洽谈。\n使用说明：\n/:heart回复任意内容可和智能客服聊天。/:rose\n/:heart查询天气：回复关键字“天气”，如“上海天气”，可查询当天上海天气情况。/:rose\n/:heart查询快递：回复关键字“快递查询”，可激活查询快递功能。/:rose\n/:heart查询菜谱：回复关键字“红烧肉”，可智能搜索多种红烧肉做法。/:rose\n/:heart成语接龙：回复关键字“成语接龙”，可激活成语接龙游戏。/:rose\n/:heart讲笑话，看新闻等等更过精彩内容等你去发掘。/:rose\n";
+                    ar.Result.Add("single", String.Format(subscribeMsgModel, Parameters["FromUserName"].ToString(),
+                        Parameters["ToUserName"].ToString(), DateTime.Now.Ticks, subscribeMsg));
                 }
             }
             else

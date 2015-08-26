@@ -158,14 +158,16 @@ namespace SiweiSoft.SAPIService.Core
                     {
                         XmlDocument doc = new XmlDocument();
                         doc.LoadXml(postData);
-                        XmlNode ToUserName = doc.SelectSingleNode("/xml/ToUserName");
-                        XmlNode FromUserName = doc.SelectSingleNode("/xml/FromUserName");
-                        XmlNode Content = doc.SelectSingleNode("/xml/Content");
-                        XmlNode MsgType = doc.SelectSingleNode("/xml/MsgType");
-                        parameters.Add("ToUserName", ToUserName.InnerText);
-                        parameters.Add("FromUserName", FromUserName.InnerText);
-                        parameters.Add("Content", Content.InnerText);
-                        parameters.Add("MsgType", MsgType.InnerText); //当前只支持文本信息类型
+                        XmlNode toUserName = doc.SelectSingleNode("/xml/ToUserName");
+                        XmlNode fromUserName = doc.SelectSingleNode("/xml/FromUserName");
+                        XmlNode content = doc.SelectSingleNode("/xml/Content");
+                        XmlNode msgType = doc.SelectSingleNode("/xml/MsgType");
+                        XmlNode _event = doc.SelectSingleNode("/xml/Event");
+                        parameters.Add("ToUserName", toUserName.InnerText);
+                        parameters.Add("FromUserName", fromUserName.InnerText);
+                        parameters.Add("MsgType", msgType.InnerText);
+                        parameters.Add("Content", content != null ? content.InnerText : null);
+                        parameters.Add("Event", _event != null ? _event.InnerText : null);
                     }
                     else
                         GetURLParameters(ref parameters, postData);
