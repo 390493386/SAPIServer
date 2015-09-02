@@ -49,6 +49,8 @@
     <Compile Include="Core\SapiRequest.cs" />
     <Compile Include="Core\SapiService.cs" />
     <Compile Include="Core\Session.cs" />
+    <Compile Include="Helper\HttpFile.cs" />
+    <Compile Include="Helper\HttpFileUtilities.cs" />
     <Compile Include="Helper\HttpUtilities.cs" />
     <Compile Include="Helper\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -122,13 +122,11 @@ namespace SiweiSoft.SAPIService.Core
                 string contentType = context.Request.Headers["Content-Type"];
                 if (contentType != null && contentType.Contains("multipart/form-data"))
                 {
-                    //context.Request.
-                    //if(Filepath ！= null&& exist)
-                    //{
-
-                    //}
-                    //else
-                    //print log file path not exist
+                    if (SapiService.FileServerPath != null)
+                    {
+                    }
+                    else
+                        Log.Comment(CommentType.Error, "文件存放路径未设置，文件上传失败！");
                 }
                 else
                 {

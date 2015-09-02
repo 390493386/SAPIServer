@@ -1,6 +1,7 @@
 ﻿using SiweiSoft.SAPIService.Helper;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading;
@@ -34,9 +35,6 @@ namespace SiweiSoft.SAPIService.Core
         //是否跨源?
         private bool _withCrossOrigin;
 
-        //文件存放路径
-        private string _fileServerPath;
-
         /// <summary>
         /// Cookie name
         /// </summary>
@@ -62,6 +60,11 @@ namespace SiweiSoft.SAPIService.Core
         /// 服务根目录
         /// </summary>
         internal static string RootPath;
+
+        /// <summary>
+        /// 文件存放路径
+        /// </summary>
+        internal static string FileServerPath;
 
         /// <summary>
         /// 服务器配置
@@ -147,7 +150,7 @@ namespace SiweiSoft.SAPIService.Core
             if (fileServerPath != null)
             {
                 fileServerPath = fileServerPath.Trim(' ');
-                _fileServerPath = String.IsNullOrEmpty(fileServerPath) ? null : fileServerPath;
+                FileServerPath = (String.IsNullOrEmpty(fileServerPath) || !Directory.Exists(fileServerPath)) ? null : fileServerPath;
             }
             if (cookieName != null)
             {
@@ -210,6 +213,10 @@ namespace SiweiSoft.SAPIService.Core
                 }
                 Log.Comment(CommentType.Info, "是否允许跨源访问：" + (_withCrossOrigin ? "是。" : "否。"));
                 Log.Comment(CommentType.Info, "是否支持cookie：" + (_withCookie ? "是。" : "否。"));
+                if (FileServerPath == null)
+                    Log.Comment(CommentType.Warn, "文件存放路径为空！");
+                else
+                    Log.Comment(CommentType.Warn, "文件存放路径：" + FileServerPath);
                 Log.Comment(CommentType.Info, "服务已正常启动，等待连接请求。。。");
 
                 if (_withCookie)
