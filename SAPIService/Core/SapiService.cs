@@ -114,7 +114,7 @@ namespace SiweiSoft.SAPIService.Core
         /// </summary>
         /// <param name="ipAddress">本地IP地址</param>
         /// <param name="port">可用端口</param>
-        /// <param name="RootPath">服务根目录</param>
+        /// <param name="rootPath">服务根目录</param>
         /// <param name="originHost">跨源主机地址，不设定表示不需跨源</param>
         /// <param name="fileServerPath">文件存放路径，上传文件请求用到</param>
         /// <param name="cookieName">Cookie名字，不设定表示不需Cookie支持</param>
@@ -158,7 +158,7 @@ namespace SiweiSoft.SAPIService.Core
                     _withCookie = true;
                 }
             }
-            _cookieExpires = cookieExpires ?? defaultCookieExpires;
+            _cookieExpires = (cookieExpires == null || cookieExpires.Value <= 0) ? defaultCookieExpires : cookieExpires.Value;
             _controllersAssembly = controllersAssembly;
             ServerConfigs = serverConfig;
 
@@ -211,6 +211,19 @@ namespace SiweiSoft.SAPIService.Core
                 Log.Comment(CommentType.Info, "是否允许跨源访问：" + (_withCrossOrigin ? "是。" : "否。"));
                 Log.Comment(CommentType.Info, "是否支持cookie：" + (_withCookie ? "是。" : "否。"));
                 Log.Comment(CommentType.Info, "服务已正常启动，等待连接请求。。。");
+
+                if (_withCookie)
+                {
+                    //开启新的线程清理已过期的session
+                    System.Timers.Timer timer = new System.Timers.Timer()
+                    {
+                        //单位毫秒,1 * 60 * 60 * 1000(1小时)毫秒清除一次过期session
+                        Interval = 1 * 60 * 60 * 1000,
+                        AutoReset = true,
+                        Enabled = true
+                    };
+                    timer.Elapsed += new System.Timers.ElapsedEventHandler(CleanSessionList);
+                }
             }
             catch (HttpListenerException ex)
             {
@@ -331,6 +344,40 @@ namespace SiweiSoft.SAPIService.Core
             session.ResetExpireDate(_cookieExpires);
             SessionsDictionary.Add(cookieString, session);
             return session;
+        }
+
+        /// <summary>
+        /// 获取当前登录用户
+        /// </summary>
+        /// <returns></returns>
+        public static int GetCurrentOnlineCount()
+        {
+            int onlineCount = 0;
+            foreach (KeyValuePair<string, Session> session in SessionsDictionary)
+            {
+                if (session.Value.IsAuthorized)
+                    onlineCount++;
+            }
+            return onlineCount;
+        }
+
+        /// <summary>
+        /// 清理session List,把过期的session移除
+        /// </summary>
+        private static void CleanSessionList(object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (SessionsDictionary != null)
+            {
+                List<string> toBeRemovedSessionKey = new List<string>();
+                //将已过期的session放入list里面
+                foreach (var session in SessionsDictionary)
+                    if (session.Value.IsSessionExpired())
+                        toBeRemovedSessionKey.Add(session.Key);
+
+                //移除过期session
+                foreach (string skey in toBeRemovedSessionKey)
+                    SessionsDictionary.Remove(skey);
+            }
         }
     }
 }
