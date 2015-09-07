@@ -118,15 +118,11 @@ namespace SiweiSoft.SAPIService.Core
 
             if (requestMethod == "POST" && context.Request.InputStream.CanRead)
             {
-                //TODO: 上传文件请求处理
                 string contentType = context.Request.Headers["Content-Type"];
                 if (contentType != null && contentType.Contains("multipart/form-data"))
                 {
-                    if (SapiService.FileServerPath != null)
-                    {
-                    }
-                    else
-                        Log.Comment(CommentType.Error, "文件存放路径未设置，文件上传失败！");
+                    HttpFile uploadFile = HttpFileUtilities.SaveFile(context.Request, SapiService.FileServerPath, Encoding.UTF8);
+                    parameters.Add("UploadFile", uploadFile);
                 }
                 else
                 {

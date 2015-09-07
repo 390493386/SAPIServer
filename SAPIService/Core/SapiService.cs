@@ -216,7 +216,7 @@ namespace SiweiSoft.SAPIService.Core
                 if (FileServerPath == null)
                     Log.Comment(CommentType.Warn, "文件存放路径为空！");
                 else
-                    Log.Comment(CommentType.Warn, "文件存放路径：" + FileServerPath);
+                    Log.Comment(CommentType.Info, "文件存放路径：" + FileServerPath);
                 Log.Comment(CommentType.Info, "服务已正常启动，等待连接请求。。。");
 
                 if (_withCookie)
