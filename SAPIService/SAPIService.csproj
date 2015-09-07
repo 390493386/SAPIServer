@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.9.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -41,14 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\ControllerBase.cs" />
+    <Compile Include="Controller\MySql\MySqlController.cs" />
     <Compile Include="Core\ActionInfo.cs" />
     <Compile Include="Core\ActionAttribute.cs" />
-    <Compile Include="Core\Controller.cs" />
     <Compile Include="Core\ControllerReflectionInfo.cs" />
     <Compile Include="Core\ActionResult.cs" />
     <Compile Include="Core\SapiRequest.cs" />
     <Compile Include="Core\SapiService.cs" />
     <Compile Include="Core\Session.cs" />
+    <Compile Include="Dao\ConnectionContext.cs" />
+    <Compile Include="Dao\MySql\MySqlConnectionContext.cs" />
     <Compile Include="Helper\HttpFile.cs" />
     <Compile Include="Helper\HttpFileUtilities.cs" />
     <Compile Include="Helper\HttpUtilities.cs" />

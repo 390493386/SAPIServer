@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using SiweiSoft.SAPIService.Core;
+using SiweiSoft.SAPIService.Dao;
+using System.Collections.Generic;
+using System.Data.Common;
 
-namespace SiweiSoft.SAPIService.Core
+namespace SiweiSoft.SAPIService.Controller
 {
-    public abstract class Controller
+    public abstract class ControllerBase<TConnectionContext, TConnection>
+        where TConnection : DbConnection
+        where TConnectionContext : ConnectionContext<TConnection>
     {
         /// <summary>
         /// 服务器配置
@@ -32,12 +37,21 @@ namespace SiweiSoft.SAPIService.Core
         }
 
         /// <summary>
+        /// 数据库连接上下文
+        /// </summary>
+        public TConnectionContext ConnectionContext
+        {
+            protected get;
+            set;
+        }
+
+        /// <summary>
         /// 重写克隆方法
         /// </summary>
         /// <returns></returns>
-        public virtual Controller Clone()
+        public virtual ControllerBase Clone()
         {
-            return (Controller)this.MemberwiseClone();
+            return (ControllerBase)this.MemberwiseClone();
         }
     }
 }

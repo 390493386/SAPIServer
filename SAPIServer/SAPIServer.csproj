@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ControllerMpa.cs" />
     <Compile Include="Controllers\ExampleController.cs" />
     <Compile Include="Controllers\WeChatController.cs" />
     <Compile Include="LBItemDetail.cs">
@@ -100,6 +101,9 @@
       <Project>{52d2e507-13f3-4a4f-9d0c-b030b591b58f}</Project>
       <Name>SAPIService</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MpaDao\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,7 +3,7 @@ using System;
 
 namespace SiweiSoft.SAPIServer.Controllers
 {
-    public class ExampleController : Controller
+    public class ExampleController : ControllerBase
     {
         [Action("TEST", needAuthorize: false)]
         public ActionResult Test()
