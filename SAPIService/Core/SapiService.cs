@@ -81,6 +81,11 @@ namespace SiweiSoft.SAPIService.Core
         /// </summary>
         internal static Dictionary<string, Session> SessionsDictionary;
 
+        /// <summary>
+        /// 数据库连接字符串
+        /// </summary>
+        internal static string ConnectionString;
+
         #endregion internal static fields
 
         #region private const variable, for default values
@@ -123,12 +128,13 @@ namespace SiweiSoft.SAPIService.Core
         /// <param name="cookieName">Cookie名字，不设定表示不需Cookie支持</param>
         /// <param name="cookieExpires">Cookie过期时间，单位：秒</param>
         /// <param name="controllersAssembly">需加载的controllers所在的程序集</param>
+        /// <param name="conString">数据库连接字符串</param>
         /// <param name="serverConfig">服务器配置</param>
         public SapiService(string ipAddress, int port,
             string rootPath = null, string originHost = null,
             string fileServerPath = null, string cookieName = null,
             int? cookieExpires = null, string controllersAssembly = null,
-            Dictionary<string, object> serverConfig = null)
+            string connectionString = null, Dictionary<string, object> serverConfig = null)
         {
             _ipAddress = ipAddress;
             _port = port;
@@ -164,6 +170,7 @@ namespace SiweiSoft.SAPIService.Core
             _cookieExpires = (cookieExpires == null || cookieExpires.Value <= 0) ? defaultCookieExpires : cookieExpires.Value;
             _controllersAssembly = controllersAssembly;
             ServerConfigs = serverConfig;
+            ConnectionString = connectionString;
 
             Status = Status.NotInitialized;
         }

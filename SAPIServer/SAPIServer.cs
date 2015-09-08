@@ -43,10 +43,13 @@ namespace SiweiSoft.SAPIServer
                     Int32.TryParse(configuration["CookieExpiredTime"], out cookieExpiredTime);
                 string controllersAssembly = configuration.ContainsKey("ControllersAssembly") ? configuration["ControllersAssembly"] : null;
 
+                ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings["MPA-JSYZ"];
+                string conStr = setting != null && setting.ConnectionString != String.Empty ? setting.ConnectionString : null;
+
                 //创建服务实例
                 serviceInstance = new SapiService(serverIP, port, rootPath: serviceRoot, originHost: originHost,
                     fileServerPath: fileSavedPath, cookieName: cookieName, cookieExpires: cookieExpiredTime,
-                    controllersAssembly: controllersAssembly, serverConfig: null);
+                    controllersAssembly: controllersAssembly, connectionString: conStr, serverConfig: null);
                 //初始化服务
                 serviceInstance.Initialize();
                 if (serviceInstance.Status == Status.NotInitialized)

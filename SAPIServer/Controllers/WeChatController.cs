@@ -9,7 +9,7 @@ using System.Web.Script.Serialization;
 
 namespace SiweiSoft.SAPIServer.Controllers
 {
-    public class WeChatController : ControllerBase
+    public class WeChatController : Controller
     {
         /// <summary>
         /// 微信服务接口，微信号：weipingtai_dev

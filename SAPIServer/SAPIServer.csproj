@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\Controller4MySql.cs" />
     <Compile Include="Controllers\ExampleController.cs" />
     <Compile Include="Controllers\WeChatController.cs" />
     <Compile Include="LBItemDetail.cs">
