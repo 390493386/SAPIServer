@@ -2,7 +2,7 @@
 
 namespace SiweiSoft.SAPIService.Core
 {
-    public abstract class Controller
+    public abstract class ControllerBase
     {
         /// <summary>
         /// 服务器配置
@@ -35,9 +35,9 @@ namespace SiweiSoft.SAPIService.Core
         /// 重写克隆方法
         /// </summary>
         /// <returns></returns>
-        public virtual Controller Clone()
+        public virtual ControllerBase Clone()
         {
-            return (Controller)this.MemberwiseClone();
+            return (ControllerBase)this.MemberwiseClone();
         }
     }
 }

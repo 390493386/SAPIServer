@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Core\ActionInfo.cs" />
     <Compile Include="Core\ActionAttribute.cs" />
-    <Compile Include="Core\Controller.cs" />
+    <Compile Include="Core\ControllerBase.cs" />
     <Compile Include="Core\ControllerReflectionInfo.cs" />
     <Compile Include="Core\ActionResult.cs" />
     <Compile Include="Core\SapiRequest.cs" />
