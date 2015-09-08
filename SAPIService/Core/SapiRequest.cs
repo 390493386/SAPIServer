@@ -40,7 +40,7 @@ namespace SiweiSoft.SAPIService.Core
 
                 //Initialize controller instance and get action information
                 ActionInfo actionInfo = null;
-                ControllerBase controllerInstance = InitializeControllerInstance(out actionInfo);
+                Controller controllerInstance = InitializeControllerInstance(out actionInfo);
                 if (controllerInstance == null || actionInfo == null)
                     Log.Comment(CommentType.Error, "Controller或者对应Action未找到，可能请求的格式不正确(正确格式：{0}/SAPI/ControllerName/ActionName)。",
                         SapiService.RootPath != null ? "/" + SapiService.RootPath : null);
@@ -189,9 +189,9 @@ namespace SiweiSoft.SAPIService.Core
         /// </summary>
         /// <param name="actionInfo"></param>
         /// <returns></returns>
-        private ControllerBase InitializeControllerInstance(out ActionInfo actionInfo)
+        private Controller InitializeControllerInstance(out ActionInfo actionInfo)
         {
-            ControllerBase controller = null;
+            Controller controller = null;
             actionInfo = null;
 
             //Get root name, controller name, and action name from request
@@ -206,7 +206,7 @@ namespace SiweiSoft.SAPIService.Core
                 if (controllerInfo != null)
                 {
                     actionInfo = controllerInfo != null ? controllerInfo.GetMethodInfoByAlias(actionName) : null;
-                    controller = ((ControllerBase)controllerInfo.ControllerInstance).Clone();
+                    controller = ((Controller)controllerInfo.ControllerInstance).Clone();
                 }
             }
             else
