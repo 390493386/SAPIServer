@@ -119,11 +119,23 @@ namespace SiweiSoft.SAPIServer
             {
                 configuration.Add(key, ConfigurationManager.AppSettings[key]);
             }
+
+            //在界面上显示config配置
+            c_selfStartService.Checked = configuration.ContainsKey("SvcSelfStart") && configuration["SvcSelfStart"] == "true";
+            t_localIPAddress.Text = configuration.ContainsKey("ServerIP") ? configuration["ServerIP"] : null;
+            t_localPort.Text = configuration.ContainsKey("ServerPort") ? configuration["ServerPort"] : null;
+            t_rootPath.Text = configuration.ContainsKey("ServiceRoot") ? configuration["ServiceRoot"] : null;
+            t_serviceName.Text = configuration.ContainsKey("ServiceName") ? configuration["ServiceName"] : null;
+            t_originHost.Text = configuration.ContainsKey("OriginHost") ? configuration["OriginHost"] : null;
+            t_fileSvPath.Text = configuration.ContainsKey("FileSavedPath") ? configuration["FileSavedPath"] : null;
+            t_controllersAssembly.Text = configuration.ContainsKey("ControllersAssembly") ? configuration["ControllersAssembly"] : null;
+            t_cookieName.Text = configuration.ContainsKey("CookieName") ? configuration["CookieName"] : null;
+            t_cookieExpires.Text = configuration.ContainsKey("CookieExpiredTime") ? configuration["CookieExpiredTime"] : null;
         }
 
         private void SaveConfig_Click(object sender, EventArgs e)
         {
-            string svcSelfStart = c_selfStartService.Checked ? "1" : "0";
+            string svcSelfStart = c_selfStartService.Checked ? "true" : "false";
             string serverIP = t_localIPAddress.Text;
             string serverPort = t_localPort.Text;
             string root = t_rootPath.Text;
@@ -146,7 +158,25 @@ namespace SiweiSoft.SAPIServer
             config.AppSettings.Settings["CookieName"].Value = cName;
             config.AppSettings.Settings["CookieExpiredTime"].Value = cExpires;
             config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("appSettings");
+
+            //禁用控件
+            c_selfStartServer.Enabled = false;
+            c_selfStartService.Enabled = false;
+            t_localIPAddress.Enabled = false;
+            t_localPort.Enabled = false;
+            t_rootPath.Enabled = false;
+            t_serviceName.Enabled = false;
+            t_originHost.Enabled = false;
+            t_fileSvPath.Enabled = false;
+            t_controllersAssembly.Enabled = false;
+            t_cookieName.Enabled = false;
+            t_cookieExpires.Enabled = false;
+            SaveConfig.Enabled = false;
+
+            EditConfig.Enabled = true;
+
+            Log.Comment(CommentType.Warn, "服务配置信息已更改，重启服务生效！");
+            MessageBox.Show("保存成功，重启服务生效！");
         }
 
         private void ClearLog_Click(object sender, EventArgs e)
@@ -157,7 +187,7 @@ namespace SiweiSoft.SAPIServer
         //窗体加载时响应事件
         private void SAPIServer_Load(object sender, EventArgs e)
         {
-            if (configuration.ContainsKey("SvcSelfStart") && configuration["SvcSelfStart"] == "1")
+            if (configuration.ContainsKey("SvcSelfStart") && configuration["SvcSelfStart"] == "true")
                 SvcStartStop.PerformClick();
         }
 
@@ -180,6 +210,24 @@ namespace SiweiSoft.SAPIServer
                 //logDetais.ldRichTextBox
                 logDetais.ShowDialog();
             }
+        }
+
+        private void EditConfig_Click(object sender, EventArgs e)
+        {
+            c_selfStartServer.Enabled = true;
+            c_selfStartService.Enabled = true;
+            t_localIPAddress.Enabled = true;
+            t_localPort.Enabled = true;
+            t_rootPath.Enabled = true;
+            t_serviceName.Enabled = true;
+            t_originHost.Enabled = true;
+            t_fileSvPath.Enabled = true;
+            t_controllersAssembly.Enabled = true;
+            t_cookieName.Enabled = true;
+            t_cookieExpires.Enabled = true;
+            SaveConfig.Enabled = true;
+
+            EditConfig.Enabled = false;
         }
     }
 }

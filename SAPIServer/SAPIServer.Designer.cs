@@ -34,7 +34,6 @@
             this.ClearLog = new System.Windows.Forms.Button();
             this.AutoTask = new System.Windows.Forms.Button();
             this.SvcStartStop = new System.Windows.Forms.Button();
-            this.logsBox = new SiweiSoft.SAPIServer.SListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.t_cookieExpires = new System.Windows.Forms.TextBox();
@@ -61,6 +60,8 @@
             this.c_selfStartService = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.c_selfStartServer = new System.Windows.Forms.CheckBox();
+            this.EditConfig = new System.Windows.Forms.Button();
+            this.logsBox = new SiweiSoft.SAPIServer.SListBox();
             this.tab1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -122,19 +123,9 @@
             this.SvcStartStop.UseVisualStyleBackColor = true;
             this.SvcStartStop.Click += new System.EventHandler(this.SvcStartStop_Click);
             // 
-            // logsBox
-            // 
-            this.logsBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.logsBox.FormattingEnabled = true;
-            this.logsBox.ItemHeight = 12;
-            this.logsBox.Location = new System.Drawing.Point(6, 7);
-            this.logsBox.Name = "logsBox";
-            this.logsBox.Size = new System.Drawing.Size(621, 376);
-            this.logsBox.TabIndex = 0;
-            this.logsBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.logsBox_MouseDoubleClick);
-            // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.EditConfig);
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Controls.Add(this.SaveConfig);
             this.tabPage2.Controls.Add(this.groupBox2);
@@ -161,6 +152,7 @@
             // 
             // t_cookieExpires
             // 
+            this.t_cookieExpires.Enabled = false;
             this.t_cookieExpires.Location = new System.Drawing.Point(122, 50);
             this.t_cookieExpires.Name = "t_cookieExpires";
             this.t_cookieExpires.Size = new System.Drawing.Size(221, 21);
@@ -168,6 +160,7 @@
             // 
             // t_cookieName
             // 
+            this.t_cookieName.Enabled = false;
             this.t_cookieName.Location = new System.Drawing.Point(122, 21);
             this.t_cookieName.Name = "t_cookieName";
             this.t_cookieName.Size = new System.Drawing.Size(221, 21);
@@ -193,9 +186,10 @@
             // 
             // SaveConfig
             // 
-            this.SaveConfig.Location = new System.Drawing.Point(6, 394);
+            this.SaveConfig.Enabled = false;
+            this.SaveConfig.Location = new System.Drawing.Point(73, 394);
             this.SaveConfig.Name = "SaveConfig";
-            this.SaveConfig.Size = new System.Drawing.Size(104, 23);
+            this.SaveConfig.Size = new System.Drawing.Size(60, 23);
             this.SaveConfig.TabIndex = 2;
             this.SaveConfig.Text = "保存";
             this.SaveConfig.UseVisualStyleBackColor = true;
@@ -225,6 +219,7 @@
             // 
             // t_controllersAssembly
             // 
+            this.t_controllersAssembly.Enabled = false;
             this.t_controllersAssembly.Location = new System.Drawing.Point(122, 185);
             this.t_controllersAssembly.Name = "t_controllersAssembly";
             this.t_controllersAssembly.Size = new System.Drawing.Size(221, 21);
@@ -241,6 +236,7 @@
             // 
             // t_localIPAddress
             // 
+            this.t_localIPAddress.Enabled = false;
             this.t_localIPAddress.Location = new System.Drawing.Point(122, 20);
             this.t_localIPAddress.Name = "t_localIPAddress";
             this.t_localIPAddress.Size = new System.Drawing.Size(151, 21);
@@ -248,6 +244,7 @@
             // 
             // t_fileSvPath
             // 
+            this.t_fileSvPath.Enabled = false;
             this.t_fileSvPath.Location = new System.Drawing.Point(122, 152);
             this.t_fileSvPath.Name = "t_fileSvPath";
             this.t_fileSvPath.Size = new System.Drawing.Size(221, 21);
@@ -255,6 +252,7 @@
             // 
             // t_originHost
             // 
+            this.t_originHost.Enabled = false;
             this.t_originHost.Location = new System.Drawing.Point(122, 119);
             this.t_originHost.Name = "t_originHost";
             this.t_originHost.Size = new System.Drawing.Size(221, 21);
@@ -280,6 +278,7 @@
             // 
             // t_serviceName
             // 
+            this.t_serviceName.Enabled = false;
             this.t_serviceName.Location = new System.Drawing.Point(122, 86);
             this.t_serviceName.Name = "t_serviceName";
             this.t_serviceName.Size = new System.Drawing.Size(221, 21);
@@ -296,6 +295,7 @@
             // 
             // t_rootPath
             // 
+            this.t_rootPath.Enabled = false;
             this.t_rootPath.Location = new System.Drawing.Point(122, 53);
             this.t_rootPath.Name = "t_rootPath";
             this.t_rootPath.Size = new System.Drawing.Size(221, 21);
@@ -312,6 +312,7 @@
             // 
             // t_localPort
             // 
+            this.t_localPort.Enabled = false;
             this.t_localPort.Location = new System.Drawing.Point(295, 20);
             this.t_localPort.Name = "t_localPort";
             this.t_localPort.Size = new System.Drawing.Size(48, 21);
@@ -349,6 +350,7 @@
             // c_selfStartService
             // 
             this.c_selfStartService.AutoSize = true;
+            this.c_selfStartService.Enabled = false;
             this.c_selfStartService.Location = new System.Drawing.Point(122, 45);
             this.c_selfStartService.Name = "c_selfStartService";
             this.c_selfStartService.Size = new System.Drawing.Size(84, 16);
@@ -368,12 +370,34 @@
             // c_selfStartServer
             // 
             this.c_selfStartServer.AutoSize = true;
+            this.c_selfStartServer.Enabled = false;
             this.c_selfStartServer.Location = new System.Drawing.Point(122, 23);
             this.c_selfStartServer.Name = "c_selfStartServer";
             this.c_selfStartServer.Size = new System.Drawing.Size(72, 16);
             this.c_selfStartServer.TabIndex = 0;
             this.c_selfStartServer.Text = "开机运行";
             this.c_selfStartServer.UseVisualStyleBackColor = true;
+            // 
+            // EditConfig
+            // 
+            this.EditConfig.Location = new System.Drawing.Point(7, 394);
+            this.EditConfig.Name = "EditConfig";
+            this.EditConfig.Size = new System.Drawing.Size(60, 23);
+            this.EditConfig.TabIndex = 4;
+            this.EditConfig.Text = "修改";
+            this.EditConfig.UseVisualStyleBackColor = true;
+            this.EditConfig.Click += new System.EventHandler(this.EditConfig_Click);
+            // 
+            // logsBox
+            // 
+            this.logsBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.logsBox.FormattingEnabled = true;
+            this.logsBox.ItemHeight = 12;
+            this.logsBox.Location = new System.Drawing.Point(6, 7);
+            this.logsBox.Name = "logsBox";
+            this.logsBox.Size = new System.Drawing.Size(621, 376);
+            this.logsBox.TabIndex = 0;
+            this.logsBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.logsBox_MouseDoubleClick);
             // 
             // SAPIServer
             // 
@@ -434,6 +458,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button ClearLog;
         private System.Windows.Forms.Button AutoTask;
+        private System.Windows.Forms.Button EditConfig;
     }
 }
 
