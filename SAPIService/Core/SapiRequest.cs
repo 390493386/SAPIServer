@@ -71,18 +71,18 @@ namespace SiweiSoft.SAPIService.Core
                     }
 
                     //下载文件请求
-                    if (actionResult.FileStream != null)
+                    if (actionResult.Stream != null)
                     {
                         int receivedLength = 0;
                         byte[] buffer = new byte[10240];
                         do
                         {
-                            receivedLength = actionResult.FileStream.Read(buffer, 0, buffer.Length);
+                            receivedLength = actionResult.Stream.Read(buffer, 0, buffer.Length);
                             context.Response.OutputStream.Write(buffer, 0, receivedLength);
                         }
                         while (receivedLength > 0);
-                        actionResult.FileStream.Flush();
-                        actionResult.FileStream.Close();
+                        actionResult.Stream.Flush();
+                        actionResult.Stream.Close();
                         context.Response.StatusCode = 200;
                     }
                     else  //数据请求

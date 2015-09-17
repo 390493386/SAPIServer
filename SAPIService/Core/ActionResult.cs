@@ -14,7 +14,7 @@ namespace SiweiSoft.SAPIService.Core
         /// <summary>
         /// 文件流，文件下载请求时使用
         /// </summary>
-        public FileStream FileStream { get; set; }
+        public Stream Stream { get; set; }
 
         /// <summary>
         /// 请求响应数据

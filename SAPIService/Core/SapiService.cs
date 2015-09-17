@@ -156,7 +156,7 @@ namespace SiweiSoft.SAPIService.Core
             if (fileServerPath != null)
             {
                 fileServerPath = fileServerPath.Trim(' ');
-                FileServerPath = (String.IsNullOrEmpty(fileServerPath) || !Directory.Exists(fileServerPath)) ? null : fileServerPath;
+                FileServerPath = fileServerPath == String.Empty ? null : fileServerPath;
             }
             if (cookieName != null)
             {
@@ -223,7 +223,22 @@ namespace SiweiSoft.SAPIService.Core
                 if (FileServerPath == null)
                     Log.Comment(CommentType.Warn, "文件存放路径为空！");
                 else
-                    Log.Comment(CommentType.Info, "文件存放路径：" + FileServerPath);
+                {
+                    if (!Directory.Exists(FileServerPath))
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(FileServerPath);
+                        }
+                        catch (DirectoryNotFoundException)
+                        {
+                            Log.Comment(CommentType.Warn, "指定文件存放路径（" + FileServerPath + "）未找到。");
+                            FileServerPath = null;
+                        }
+                    }
+                    else
+                        Log.Comment(CommentType.Info, "文件存放路径：" + FileServerPath);
+                }
                 Log.Comment(CommentType.Info, "服务已正常启动，等待连接请求。。。");
 
                 if (_withCookie)
