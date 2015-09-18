@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
-using System.Web.Script.Serialization;
 
 namespace SiweiSoft.SAPIService.Core
 {
@@ -36,7 +36,7 @@ namespace SiweiSoft.SAPIService.Core
         /// <returns></returns>
         public virtual string GetResultString()
         {
-            return new JavaScriptSerializer().Serialize(this.Result);
+            return JsonConvert.SerializeObject(this.Result);//new JavaScriptSerializer().Serialize(this.Result);
         }
     }
 
