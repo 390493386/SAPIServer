@@ -42,7 +42,7 @@ namespace SiweiSoft.SAPIService.Core
                 ActionInfo actionInfo = null;
                 Controller controllerInstance = InitializeControllerInstance(out actionInfo);
                 if (controllerInstance == null || actionInfo == null)
-                    Log.Comment(CommentType.Error, "Controller或者对应Action未找到，可能请求的格式不正确(正确格式：{0}/SAPI/ControllerName/ActionName)。",
+                    Log.Comment(CommentType.Error, "Controller或者对应Action未找到，可能请求的格式不正确(正确格式：{0}/ControllerName/ActionName?QueryString)。",
                         SapiService.RootPath != null ? "/" + SapiService.RootPath : null);
                 else
                 {
