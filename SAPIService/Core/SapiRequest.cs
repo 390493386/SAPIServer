@@ -34,10 +34,9 @@ namespace SiweiSoft.SAPIService.Core
         /// </summary>
         public void Response()
         {
+            ActionResult actionResult = null;
             try
             {
-                ActionResult actionResult = null;
-
                 //Initialize controller instance and get action information
                 ActionInfo actionInfo = null;
                 Controller controllerInstance = InitializeControllerInstance(out actionInfo);
@@ -99,6 +98,10 @@ namespace SiweiSoft.SAPIService.Core
             }
             catch (Exception ex)
             {
+                //关闭文件流
+                if (actionResult != null && actionResult.Stream != null)
+                    actionResult.Stream.Close();
+
                 context.Response.StatusCode = 500;
                 Log.Comment(CommentType.Error, "未知错误：" + ex.Message);
             }
