@@ -295,7 +295,7 @@ namespace SiweiSoft.SAPIService.Core
         /// <param name="context"></param>
         private void ConcreteProcess<TSession>(object context) where TSession : Session, new()
         {
-            HttpListenerContext requestContext = (HttpListenerContext)context;
+            HttpListenerContext requestContext = context as HttpListenerContext;
 
             //if (requestContext.Request.RawUrl == "/favicon.ico")//Request for the icon
             //{

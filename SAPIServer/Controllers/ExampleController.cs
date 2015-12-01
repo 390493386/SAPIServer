@@ -13,10 +13,13 @@ namespace SiweiSoft.SAPIServer.Controllers
 
             DAOProcessCode code;
             conCtx.OpenConnection(out code);
-            var ar = new ActionResult();
-            ar.Result.Add("code", 200);
-            ar.Result.Add("message", "Success");
-            return ar;
+
+            var persons = new[]
+            {
+                new { Name = "zhanhui", Age = 27},
+                new { Name = "yangzhenzhen", Age = 25 }
+            };
+            return new DataActionResult(persons);
         }
     }
 }

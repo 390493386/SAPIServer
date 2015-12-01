@@ -65,9 +65,12 @@ namespace SiweiSoft.SAPIService.Core
                 else
                 {
                     //添加请求的头部
-                    foreach (string head in actionResult.Headers)
+                    if (actionResult.Headers != null)
                     {
-                        context.Response.Headers.Add(head);
+                        foreach (string head in actionResult.Headers)
+                        {
+                            context.Response.Headers.Add(head);
+                        }
                     }
 
                     //下载文件请求
@@ -81,7 +84,6 @@ namespace SiweiSoft.SAPIService.Core
                             context.Response.OutputStream.Write(buffer, 0, receivedLength);
                         }
                         while (receivedLength > 0);
-                        actionResult.Stream.Flush();
                         actionResult.Stream.Close();
                         context.Response.StatusCode = 200;
                     }

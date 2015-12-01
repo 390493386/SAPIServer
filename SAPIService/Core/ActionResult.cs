@@ -22,21 +22,12 @@ namespace SiweiSoft.SAPIService.Core
         public Dictionary<string, object> Result { get; set; }
 
         /// <summary>
-        /// 构造方法
-        /// </summary>
-        public ActionResult()
-        {
-            Headers = new List<string>();
-            Result = new Dictionary<string, object>();
-        }
-
-        /// <summary>
         /// 获取返回结果
         /// </summary>
         /// <returns></returns>
         public virtual string GetResultString()
         {
-            return JsonConvert.SerializeObject(this.Result);//new JavaScriptSerializer().Serialize(this.Result);
+            return JsonConvert.SerializeObject(this.Result);
         }
     }
 
@@ -45,11 +36,60 @@ namespace SiweiSoft.SAPIService.Core
     /// </summary>
     public class ActionNotAuthorized : ActionResult
     {
-        public ActionNotAuthorized()
+        public override string GetResultString()
+        {
+            //此处作优化，直接返回JSON字符串，不需要序列化
+            return "{\"code\":-1,\"message\":\"Request not authorized.\"}";
+        }
+    }
+
+    /// <summary>
+    /// 数据请求
+    /// </summary>
+    public class DataActionResult : ActionResult
+    {
+        public DataActionResult()
         {
             Result = new Dictionary<string, object>();
-            Result.Add("code", -1);
-            Result.Add("message", "Request not authorized.");
+
+            Result.Add("code", 200);
+            Result.Add("message", "success");
+        }
+
+        public DataActionResult(object data)
+        {
+            Result = new Dictionary<string, object>();
+
+            Result.Add("code", 200);
+            Result.Add("message", "success");
+            Result.Add("data", data);
+        }
+
+        public DataActionResult(List<string> headers, object data)
+        {
+            Headers = headers;
+
+            Result = new Dictionary<string, object>();
+            Result.Add("code", 200);
+            Result.Add("message", "success");
+            Result.Add("data", data);
+        }
+    }
+
+    /// <summary>
+    /// 文件下载
+    /// </summary>
+    public class FileActionResult : ActionResult
+    {
+        public FileActionResult(Stream fileStream)
+        {
+            Stream = fileStream;
+        }
+
+        public FileActionResult(List<string> headers, Stream fileStream)
+        {
+            Headers = headers;
+            Stream = fileStream;
         }
     }
 }
