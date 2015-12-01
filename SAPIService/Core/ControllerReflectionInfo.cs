@@ -33,11 +33,13 @@ namespace SiweiSoft.SAPIService.Core
                     ActionAttribute actionAttribute = action.GetCustomAttribute<ActionAttribute>();
                     if (actionAttribute != null)
                     {
-                        if (!Actions.ContainsKey(actionAttribute.Alias))
-                            Actions.Add(actionAttribute.Alias, new ActionInfo(action, actionAttribute.NeedAuthorize));
+                        string alias = actionAttribute.Alias.ToUpper();
+
+                        if (!Actions.ContainsKey(alias))
+                            Actions.Add(alias, new ActionInfo(action, actionAttribute.NeedAuthorize));
                         else
                             Log.Comment(CommentType.Warn, "Controller（{0}）中存在同名Action（{1}），可能引起冲突。",
-                                controllerType.FullName, actionAttribute.Alias);
+                                controllerType.FullName, alias);
                     }
                 }
             }
