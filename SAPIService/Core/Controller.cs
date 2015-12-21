@@ -54,5 +54,16 @@ namespace SiweiSoft.SAPIService.Core
                 conCtx = new ConnectionContext<TConnection>(SapiService.ConnectionString);
             return conCtx;
         }
+
+        /// <summary>
+        /// 根据参数名字获取参数
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public T GetParameterByName<T>(string name)
+        {
+            return Parameters.ContainsKey(name) ? (T)Parameters[name] : default(T);
+        }
     }
 }
