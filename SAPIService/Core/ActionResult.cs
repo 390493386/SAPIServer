@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace SiweiSoft.SAPIService.Core
 {
@@ -20,6 +21,8 @@ namespace SiweiSoft.SAPIService.Core
         /// 请求响应数据
         /// </summary>
         public Dictionary<string, object> Result { get; set; }
+
+        public Encoding Encoding { get; set; }
 
         /// <summary>
         /// 获取返回结果

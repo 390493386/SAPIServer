@@ -67,6 +67,11 @@ namespace SiweiSoft.SAPIService.Core
         internal static string FileServerPath;
 
         /// <summary>
+        /// 请求需要认证并且没有认证时的处理代码
+        /// </summary>
+        internal static string NotAuthorized;
+
+        /// <summary>
         /// 服务器配置
         /// </summary>
         internal static Dictionary<string, object> ServerConfigs;
@@ -79,7 +84,7 @@ namespace SiweiSoft.SAPIService.Core
         /// <summary>
         /// Sessions列表
         /// </summary>
-        internal static Dictionary<string, Session> SessionsDictionary;
+        internal static Dictionary<string, SessionBase> SessionsDictionary;
 
         /// <summary>
         /// 数据库连接字符串
@@ -128,13 +133,15 @@ namespace SiweiSoft.SAPIService.Core
         /// <param name="cookieName">Cookie名字，不设定表示不需Cookie支持</param>
         /// <param name="cookieExpires">Cookie过期时间，单位：秒</param>
         /// <param name="controllersAssembly">需加载的controllers所在的程序集</param>
-        /// <param name="conString">数据库连接字符串</param>
+        /// <param name="connectionString">数据库连接字符串</param>
+        /// <param name="notAuthorized">请求需要认证并且没有经过认证时的处理代码</param>
         /// <param name="serverConfig">服务器配置</param>
         public SapiService(string ipAddress, int port,
             string rootPath = null, string originHost = null,
             string fileServerPath = null, string cookieName = null,
             int? cookieExpires = null, string controllersAssembly = null,
-            string connectionString = null, Dictionary<string, object> serverConfig = null)
+            string connectionString = null, string notAuthorized = null,
+            Dictionary<string, object> serverConfig = null)
         {
             _ipAddress = ipAddress;
             _port = port;
@@ -169,6 +176,7 @@ namespace SiweiSoft.SAPIService.Core
             }
             _cookieExpires = (cookieExpires == null || cookieExpires.Value <= 0) ? defaultCookieExpires : cookieExpires.Value;
             _controllersAssembly = controllersAssembly;
+            NotAuthorized = notAuthorized;
             ServerConfigs = serverConfig;
             ConnectionString = connectionString;
 
@@ -198,7 +206,7 @@ namespace SiweiSoft.SAPIService.Core
                 Status = Status.Running;
 
                 Log.Comment(CommentType.Info, "初始化Sessions列表。。。");
-                SessionsDictionary = new Dictionary<string, Session>();
+                SessionsDictionary = new Dictionary<string, SessionBase>();
 
                 Log.Comment(CommentType.Info, "初始化Controllers信息。。。");
                 Assembly assembly = String.IsNullOrEmpty(_controllersAssembly) ? Assembly.GetCallingAssembly() : Assembly.LoadFrom(_controllersAssembly);
@@ -264,7 +272,7 @@ namespace SiweiSoft.SAPIService.Core
         /// <summary>
         /// 运行服务
         /// </summary>
-        public void Process<TSession>() where TSession : Session, new()
+        public void Process<TSession>() where TSession : SessionBase, new()
         {
             if (Status == Status.Running)
             {
@@ -293,7 +301,7 @@ namespace SiweiSoft.SAPIService.Core
         /// 运行
         /// </summary>
         /// <param name="context"></param>
-        private void ConcreteProcess<TSession>(object context) where TSession : Session, new()
+        private void ConcreteProcess<TSession>(object context) where TSession : SessionBase, new()
         {
             HttpListenerContext requestContext = context as HttpListenerContext;
 
@@ -358,7 +366,7 @@ namespace SiweiSoft.SAPIService.Core
 
         //生成新的session
         private TSession GenerateNewSession<TSession>(HttpListenerContext context, DateTime? expires = null)
-            where TSession : Session, new()
+            where TSession : SessionBase, new()
         {
             string cookieString = Guid.NewGuid().ToString();
             Cookie cookie = new Cookie(_cookieName, cookieString, "/")
@@ -382,7 +390,7 @@ namespace SiweiSoft.SAPIService.Core
         public static int GetCurrentOnlineCount()
         {
             int onlineCount = 0;
-            foreach (KeyValuePair<string, Session> session in SessionsDictionary)
+            foreach (KeyValuePair<string, SessionBase> session in SessionsDictionary)
             {
                 if (session.Value.IsAuthorized)
                     onlineCount++;

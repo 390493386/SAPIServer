@@ -16,14 +16,14 @@ namespace SiweiSoft.SAPIService.Core
         private HttpListenerContext context;
 
         //请求session
-        private Session session;
+        private SessionBase session;
 
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="requestContext"></param>
         /// <param name="session"></param>
-        public SapiRequest(HttpListenerContext requestContext, Session session)
+        public SapiRequest(HttpListenerContext requestContext, SessionBase session)
         {
             context = requestContext;
             this.session = session;
@@ -39,20 +39,29 @@ namespace SiweiSoft.SAPIService.Core
             {
                 //Initialize controller instance and get action information
                 ActionInfo actionInfo = null;
-                Controller controllerInstance = InitializeControllerInstance(out actionInfo);
+                ControllerBase controllerInstance = InitializeControllerInstance(out actionInfo, context.Request.RawUrl.Split('?')[0]);
                 if (controllerInstance == null || actionInfo == null)
                     Log.Comment(CommentType.Error, "Controller或者对应Action未找到，可能请求的格式不正确(正确格式：{0}/ControllerName/ActionName?QueryString)。",
                         SapiService.RootPath != null ? "/" + SapiService.RootPath : null);
                 else
                 {
                     if (actionInfo.NeedAuthorize && (session == null || !session.IsAuthorized))
-                        actionResult = new ActionNotAuthorized();
+                    {
+                        controllerInstance = InitializeControllerInstance(out actionInfo, "/" + SapiService.RootPath + SapiService.NotAuthorized);
+                        if (controllerInstance != null && actionInfo != null)
+                            actionResult = (ActionResult)actionInfo.Action.Invoke(controllerInstance, null);
+                        else
+                            actionResult = new ActionNotAuthorized();
+                    }
                     else
                     {
                         controllerInstance.Session = this.session;
                         controllerInstance.Parameters = GetRequestParameters();
                         controllerInstance.ServerConfigs = SapiService.ServerConfigs;
-                        actionResult = (ActionResult)actionInfo.Action.Invoke(controllerInstance, null);
+
+                        actionResult = controllerInstance.PreResponse();
+                        actionResult = actionResult ?? (ActionResult)actionInfo.Action.Invoke(controllerInstance, null);
+                        controllerInstance.PostResponse();
                     }
                 }
 
@@ -119,7 +128,7 @@ namespace SiweiSoft.SAPIService.Core
 
             var urlParts = context.Request.RawUrl.Split('?');
             if (urlParts.Length > 1)
-                GetURLParameters(ref parameters, HttpUtility.UrlDecode(urlParts[1]));
+                GetURLParameters(ref parameters, urlParts[1]);
 
             if (requestMethod == "POST" && context.Request.InputStream.CanRead)
             {
@@ -177,6 +186,7 @@ namespace SiweiSoft.SAPIService.Core
 
         private void GetURLParameters(ref Dictionary<string, object> parameters, string queryString)
         {
+            queryString = HttpUtility.UrlDecode(queryString);
             if (!String.IsNullOrEmpty(queryString))
             {
                 string[] paramsPart = queryString.Trim('&').Split('&');
@@ -193,14 +203,15 @@ namespace SiweiSoft.SAPIService.Core
         /// 初始化Controller实例
         /// </summary>
         /// <param name="actionInfo"></param>
+        /// <param name="url"></param>
         /// <returns></returns>
-        private Controller InitializeControllerInstance(out ActionInfo actionInfo)
+        private ControllerBase InitializeControllerInstance(out ActionInfo actionInfo, string url)
         {
-            Controller controller = null;
+            ControllerBase controller = null;
             actionInfo = null;
 
             //Get root name, controller name, and action name from request
-            string[] urlParts = (context.Request.RawUrl.Split('?'))[0].Split('/');
+            string[] urlParts = url.Split('/');
             if ((urlParts.Length == 4 && String.Compare(urlParts[1], SapiService.RootPath, true) == 0)
                 || urlParts.Length == 3)
             {
@@ -211,7 +222,7 @@ namespace SiweiSoft.SAPIService.Core
                 if (controllerInfo != null)
                 {
                     actionInfo = controllerInfo != null ? controllerInfo.GetMethodInfoByAlias(actionName) : null;
-                    controller = ((Controller)controllerInfo.ControllerInstance).Clone();
+                    controller = ((ControllerBase)controllerInfo.ControllerInstance).Clone();
                 }
             }
             else

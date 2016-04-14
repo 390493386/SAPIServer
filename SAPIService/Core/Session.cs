@@ -5,7 +5,7 @@ namespace SiweiSoft.SAPIService.Core
     /// <summary>
     /// 用户会话
     /// </summary>
-    public class Session
+    public abstract class SessionBase
     {
         /// <summary>
         /// 会话过期日期
@@ -25,7 +25,7 @@ namespace SiweiSoft.SAPIService.Core
         /// 重设会话过期日期
         /// </summary>
         /// <param name="seconds"></param>
-        public void ResetExpireDate(int seconds)
+        internal void ResetExpireDate(int seconds)
         {
             ExpireDate = DateTime.Now.AddSeconds(seconds);
         }
@@ -34,7 +34,7 @@ namespace SiweiSoft.SAPIService.Core
         /// 会话是否过期
         /// </summary>
         /// <returns></returns>
-        public bool IsSessionExpired()
+        internal bool IsSessionExpired()
         {
             return DateTime.Now > ExpireDate;
         }
