@@ -30,7 +30,7 @@ namespace SiweiSoft.SAPIService.Core
         private int _port;
 
         //跨源主机
-        private string _originHost;
+        private List<string> _originHosts;
 
         //是否跨源?
         private bool _withCrossOrigin;
@@ -128,7 +128,7 @@ namespace SiweiSoft.SAPIService.Core
         /// <param name="ipAddress">本地IP地址</param>
         /// <param name="port">可用端口</param>
         /// <param name="rootPath">服务根目录</param>
-        /// <param name="originHost">跨源主机地址，不设定表示不需跨源</param>
+        /// <param name="originHosts">跨源主机地址，不设定表示不需跨源</param>
         /// <param name="fileServerPath">文件存放路径，上传文件请求用到</param>
         /// <param name="cookieName">Cookie名字，不设定表示不需Cookie支持</param>
         /// <param name="cookieExpires">Cookie过期时间，单位：秒</param>
@@ -137,7 +137,7 @@ namespace SiweiSoft.SAPIService.Core
         /// <param name="notAuthorized">请求需要认证并且没有经过认证时的处理代码</param>
         /// <param name="serverConfig">服务器配置</param>
         public SapiService(string ipAddress, int port,
-            string rootPath = null, string originHost = null,
+            string rootPath = null, List<string> originHosts = null,
             string fileServerPath = null, string cookieName = null,
             int? cookieExpires = null, string controllersAssembly = null,
             string connectionString = null, string notAuthorized = null,
@@ -151,13 +151,17 @@ namespace SiweiSoft.SAPIService.Core
                 rootPath = rootPath.Trim(' ');
                 RootPath = String.IsNullOrEmpty(rootPath) ? null : rootPath;
             }
-            if (originHost != null)
+            if (originHosts != null)
             {
-                originHost = originHost.Trim(' ');
-                if (!String.IsNullOrEmpty(originHost))
+                _originHosts = new List<string>();
+                foreach (string originHost in originHosts)
                 {
-                    _originHost = originHost;
-                    _withCrossOrigin = true;
+                    string oh = originHost.Trim(' ');
+                    if (!String.IsNullOrEmpty(oh))
+                    {
+                        _originHosts.Add(oh);
+                        _withCrossOrigin = true;
+                    }
                 }
             }
             if (fileServerPath != null)
@@ -335,7 +339,14 @@ namespace SiweiSoft.SAPIService.Core
                 }
             }
             if (_withCrossOrigin)
-                requestContext.Response.Headers.Add("Access-Control-Allow-Origin: " + _originHost);
+            {
+                string origin = requestContext.Request.Headers["Origin"];
+                foreach (string oh in _originHosts)
+                {
+                    if (oh == origin)
+                        requestContext.Response.Headers.Add("Access-Control-Allow-Origin: " + oh);
+                }
+            }
 
             SapiRequest request = new SapiRequest(requestContext, session);
             request.Response();

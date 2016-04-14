@@ -48,12 +48,12 @@
     <Compile Include="Core\ActionInfo.cs" />
     <Compile Include="Core\ActionAttribute.cs" />
     <Compile Include="Core\ConnectionContext.cs" />
-    <Compile Include="Core\Controller.cs" />
+    <Compile Include="Core\ControllerBase.cs" />
     <Compile Include="Core\ControllerReflectionInfo.cs" />
     <Compile Include="Core\ActionResult.cs" />
     <Compile Include="Core\SapiRequest.cs" />
     <Compile Include="Core\SapiService.cs" />
-    <Compile Include="Core\Session.cs" />
+    <Compile Include="Core\SessionBase.cs" />
     <Compile Include="Helper\HttpFile.cs" />
     <Compile Include="Helper\HttpFileUtilities.cs" />
     <Compile Include="Helper\HttpUtilities.cs" />

@@ -35,7 +35,6 @@ namespace SiweiSoft.SAPIServer
                 if (configuration.ContainsKey("ServerPort"))
                     Int32.TryParse(configuration["ServerPort"], out port);
                 string serviceRoot = configuration.ContainsKey("ServiceRoot") ? configuration["ServiceRoot"] : null;
-                string originHost = configuration.ContainsKey("OriginHost") ? configuration["OriginHost"] : null;
                 string fileSavedPath = configuration.ContainsKey("FileSavedPath") ? configuration["FileSavedPath"] : null;
                 string cookieName = configuration.ContainsKey("CookieName") ? configuration["CookieName"] : null;
                 int cookieExpiredTime = 3600;
@@ -43,13 +42,30 @@ namespace SiweiSoft.SAPIServer
                     Int32.TryParse(configuration["CookieExpiredTime"], out cookieExpiredTime);
                 string controllersAssembly = configuration.ContainsKey("ControllersAssembly") ? configuration["ControllersAssembly"] : null;
 
-                ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings["MPA-JSYZ"];
+                ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings["TQ"];
                 string conStr = setting != null && setting.ConnectionString != String.Empty ? setting.ConnectionString : null;
 
+                //请求需要认证并且没有经过认证时的处理代码
+                string notAuthorized = configuration.ContainsKey("NotAuthorized") ? configuration["NotAuthorized"] : null;
+
+                //用户自定义配置
+                Dictionary<string, object> serConfig = new Dictionary<string, object>();
+                //支持跨多个域
+                List<string> originHosts = new List<string>();
+                foreach (KeyValuePair<string, string> config in configuration)
+                {
+                    string key = config.Key.ToUpper();
+                    if (key.StartsWith("UDF-"))
+                        serConfig.Add(config.Key.Substring(4), config.Value);
+                    else if (key.StartsWith("ORIGINHOST"))
+                        originHosts.Add(config.Value);
+                }
+
                 //创建服务实例
-                serviceInstance = new SapiService(serverIP, port, rootPath: serviceRoot, originHost: originHost,
-                    fileServerPath: fileSavedPath, cookieName: cookieName, cookieExpires: cookieExpiredTime,
-                    controllersAssembly: controllersAssembly, connectionString: conStr, serverConfig: null);
+                serviceInstance = new SapiService(serverIP, port, rootPath: serviceRoot,
+                    originHosts: originHosts, fileServerPath: fileSavedPath, cookieName: cookieName,
+                    cookieExpires: cookieExpiredTime, controllersAssembly: controllersAssembly,
+                    connectionString: conStr, notAuthorized: notAuthorized, serverConfig: serConfig);
                 //初始化服务
                 serviceInstance.Initialize();
                 if (serviceInstance.Status == Status.NotInitialized)
@@ -61,6 +77,7 @@ namespace SiweiSoft.SAPIServer
                     //开辟新的线程运行服务
                     serviceThread = new Thread(serviceInstance.Process<UserSession>);
                     serviceThread.Start();
+
                     Log.Comment(CommentType.Info, string.Format("服务正在运行。"));
                 }
             }

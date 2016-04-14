@@ -2,7 +2,7 @@
 
 namespace SiweiSoft.SAPIServer
 {
-    public class UserSession : Session
+    public class UserSession : SessionBase
     {
         public string UserId { get; set; }
     }

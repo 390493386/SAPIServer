@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace SiweiSoft.SAPIService.Core
 {
-    public abstract class Controller
+    public abstract class ControllerBase
     {
         /// <summary>
         /// 服务器配置
@@ -26,7 +26,7 @@ namespace SiweiSoft.SAPIService.Core
         /// <summary>
         /// 会话
         /// </summary>
-        public Session Session
+        public SessionBase Session
         {
             protected get;
             set;
@@ -36,9 +36,9 @@ namespace SiweiSoft.SAPIService.Core
         /// 重写克隆方法
         /// </summary>
         /// <returns></returns>
-        public virtual Controller Clone()
+        public virtual ControllerBase Clone()
         {
-            return (Controller)this.MemberwiseClone();
+            return (ControllerBase)this.MemberwiseClone();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SiweiSoft.SAPIService.Core
         /// </summary>
         /// <typeparam name="TConnection"></typeparam>
         /// <returns></returns>
-        public virtual ConnectionContext<TConnection> GetConnectionContext<TConnection>()
+        protected virtual ConnectionContext<TConnection> GetConnectionContext<TConnection>()
             where TConnection : DbConnection, new()
         {
             ConnectionContext<TConnection> conCtx = null;
@@ -61,9 +61,25 @@ namespace SiweiSoft.SAPIService.Core
         /// <typeparam name="T"></typeparam>
         /// <param name="name"></param>
         /// <returns></returns>
-        public T GetParameterByName<T>(string name)
+        protected T GetParameterByName<T>(string name)
         {
             return Parameters.ContainsKey(name) ? (T)Parameters[name] : default(T);
+        }
+
+        /// <summary>
+        /// 响应请求前要执行的代码
+        /// </summary>
+        /// <returns></returns>
+        public virtual ActionResult PreResponse()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// 响应请求后需要执行的代码
+        /// </summary>
+        public virtual void PostResponse()
+        {
         }
     }
 }
